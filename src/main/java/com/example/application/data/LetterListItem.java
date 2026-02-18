@@ -10,16 +10,4 @@ public record LetterListItem(
         Instant lastUpdated,
         LetterState state
 ) {
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        LetterListItem that = (LetterListItem) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }
