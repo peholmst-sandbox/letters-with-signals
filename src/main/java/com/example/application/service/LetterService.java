@@ -3,6 +3,8 @@ package com.example.application.service;
 import com.example.application.data.Letter;
 import com.example.application.data.LetterListItem;
 import com.example.application.data.LetterState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -12,6 +14,8 @@ import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class LetterService {
+
+    private static final Logger log = LoggerFactory.getLogger(LetterService.class);
 
     // This service simulates a traditional database.
 
@@ -34,12 +38,16 @@ public class LetterService {
             if (value != null && value.version() != letter.version()) {
                 throw new IllegalStateException("Optimistic locking error");
             }
-            return letter.incrementVersion(clock);
+            var saved = letter.incrementVersion(clock);
+            log.info("Saving letter {} (old version {})", saved, letter.version());
+            return saved;
         });
     }
 
     public LetterListItem createLetter() {
-        return saveLetter(new Letter(UUID.randomUUID(), 1, "", "", clock.instant(), LetterState.DRAFT,
+        var id = UUID.randomUUID();
+        log.info("Creating letter {}", id);
+        return saveLetter(new Letter(id, 1, "", "", clock.instant(), LetterState.DRAFT,
                 Collections.emptyList(), Collections.emptyList())).toLetterListItem();
     }
 }
