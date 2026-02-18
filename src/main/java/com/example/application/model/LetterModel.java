@@ -46,7 +46,7 @@ public class LetterModel {
             @Override
             public @Nullable Letter merge(@Nullable Letter outerValue, @Nullable I newInnerValue) {
                 var result = valueMerger.merge(outerValue, newInnerValue);
-                if (result != null) {
+                if (result != null && !result.equals(outerValue)) {
                     return letterService.saveLetter(result);
                 } else {
                     return null;
@@ -88,8 +88,19 @@ public class LetterModel {
     }
 
     private boolean canEdit() {
-        return !requireNonNull(readOnly.get());
+        return !requireNonNull(readOnly.peek());
     }
 
+    private boolean canSend() {
+        return true; // TODO Change this!
+    }
+
+    public void ready() {
+
+    }
+
+    public void send() {
+
+    }
     // TODO Can send (there is a subject and at least one recipient)
 }

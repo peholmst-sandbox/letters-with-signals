@@ -28,7 +28,7 @@ public class LetterListItemModel {
     }
 
     public UUID id() {
-        return Objects.requireNonNull(item.get()).id();
+        return Objects.requireNonNull(item.peek()).id();
     }
 
     public Signal<LetterListItem> item() {

@@ -56,8 +56,7 @@ public final class CustomSignalUtil {
         var gridListener = grid.addSelectionListener(event -> {
             T selectedItem = event.getFirstSelectedItem().orElse(null);
             // Avoid infinite loop
-            if (!Objects.equals(selectedItem, signal.get())) {
-                // TODO This is till triggering an infinite loop!
+            if (!Objects.equals(selectedItem, signal.peek())) {
                 signal.set(selectedItem);
             }
         });

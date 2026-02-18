@@ -34,16 +34,16 @@ public class LetterViewModel {
     }
 
     public void selectById(UUID letterId) {
-        var selectedItem = listSelection.get();
+        var selectedItem = listSelection.peek();
         // Need this check to avoid an infinite loop when called by setParameter(..)
         if (selectedItem == null || !selectedItem.id().equals(letterId)) {
-            listSelection.set(requireNonNull(listItems.get()).stream().filter(itemModel -> itemModel.id().equals(letterId)).findFirst().orElse(null));
+            listSelection.set(requireNonNull(listItems.peek()).stream().filter(itemModel -> itemModel.id().equals(letterId)).findFirst().orElse(null));
         }
     }
 
     public void deselect() {
         // Need this check to avoid an infinite loop when called by setParameter(..)
-        if (listSelection.get() != null) {
+        if (listSelection.peek() != null) {
             listSelection.set(null);
         }
     }
@@ -54,7 +54,7 @@ public class LetterViewModel {
 
     public void addLetter() {
         var newLetter = new LetterListItemModel(letterService, letterService.createLetter());
-        var newEntry = new ArrayList<>(requireNonNull(listItems.get()));
+        var newEntry = new ArrayList<>(requireNonNull(listItems.peek()));
         newEntry.addFirst(newLetter);
         listItems.set(Collections.unmodifiableList(newEntry));
         listSelection.set(newLetter);
