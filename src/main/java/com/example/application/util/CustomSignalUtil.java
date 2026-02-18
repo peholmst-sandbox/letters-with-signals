@@ -57,6 +57,7 @@ public final class CustomSignalUtil {
             T selectedItem = event.getFirstSelectedItem().orElse(null);
             // Avoid infinite loop
             if (!Objects.equals(selectedItem, signal.get())) {
+                // TODO This is till triggering an infinite loop!
                 signal.set(selectedItem);
             }
         });
