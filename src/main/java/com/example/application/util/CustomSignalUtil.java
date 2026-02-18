@@ -1,7 +1,5 @@
 package com.example.application.util;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.signals.Signal;
@@ -13,7 +11,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 public final class CustomSignalUtil {
 
@@ -69,15 +66,5 @@ public final class CustomSignalUtil {
             }
         });
         return Registration.combine(gridListener, effect);
-    }
-
-    public static <C extends Component & HasComponents, T> Registration bindChild(C component, Signal<T> signal, Function<T, Component> childFactory) {
-        return Effect.effect(component, () -> {
-            component.removeAll();
-            T value = signal.get();
-            if (value != null) {
-                component.add(childFactory.apply(value));
-            }
-        });
     }
 }
