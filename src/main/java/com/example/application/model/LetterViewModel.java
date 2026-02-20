@@ -36,6 +36,7 @@ public class LetterViewModel {
     public void selectById(UUID letterId) {
         var selectedItem = listSelection.peek();
         // Need this check to avoid an infinite loop when called by setParameter(..)
+        // TODO Remove once https://github.com/vaadin/flow/issues/23588 is closed
         if (selectedItem == null || !selectedItem.id().equals(letterId)) {
             listSelection.set(requireNonNull(listItems.peek()).stream().filter(itemModel -> itemModel.id().equals(letterId)).findFirst().orElse(null));
         }
@@ -43,6 +44,7 @@ public class LetterViewModel {
 
     public void deselect() {
         // Need this check to avoid an infinite loop when called by setParameter(..)
+        // TODO Remove once https://github.com/vaadin/flow/issues/23588 is closed
         if (listSelection.peek() != null) {
             listSelection.set(null);
         }

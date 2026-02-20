@@ -5,7 +5,6 @@ import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.function.SignalMapper;
 import com.vaadin.flow.signals.function.ValueMerger;
-import com.vaadin.flow.signals.impl.Effect;
 import com.vaadin.flow.signals.local.ValueSignal;
 import org.jspecify.annotations.Nullable;
 
@@ -30,21 +29,8 @@ public final class CustomSignalUtil {
         };
     }
 
-    public static <O, I> ValueMerger<O, I> nullSafe(NullSafeValueMerger<O, I> merger) {
-        return new ValueMerger<>() {
-            @Override
-            public @Nullable O merge(@Nullable O outerValue, @Nullable I newInnerValue) {
-                if (outerValue == null) {
-                    return null;
-                } else {
-                    return merger.merge(outerValue, newInnerValue);
-                }
-            }
-        };
-    }
-
     public static <T> Registration bindItems(Grid<T> grid, Signal<List<T>> signal) {
-        return Effect.effect(grid, () -> {
+        return Signal.effect(grid, () -> {
             grid.setItems(signal.get());
         });
     }
@@ -57,7 +43,7 @@ public final class CustomSignalUtil {
                 signal.set(selectedItem);
             }
         });
-        var effect = Effect.effect(grid, () -> {
+        var effect = Signal.effect(grid, () -> {
             T selection = signal.get();
             if (selection == null) {
                 grid.deselectAll();

@@ -1,6 +1,5 @@
 package com.example.application.model;
 
-import com.example.application.data.Letter;
 import com.example.application.data.LetterListItem;
 import com.example.application.data.LetterState;
 import com.example.application.service.LetterService;
@@ -31,10 +30,9 @@ public class LetterListItemModel {
     }
 
     LetterModel toLetterModel() {
-        var letterSignal = item.map(
-                item -> Optional.ofNullable(item).flatMap(letterService::findLetterByItem).orElse(null),
-                (item, letter) -> Optional.ofNullable(letter).map(Letter::toLetterListItem).orElse(null));
-        return new LetterModel(letterService, letterSignal);
+        // Small issue: When the letter is updated, the service fetches a new one even though it already has access to the latest instance
+        var letterSignal = item.map(item -> Optional.ofNullable(item).flatMap(letterService::findLetterByItem).orElse(null));
+        return new LetterModel(letterService, letterSignal, letter -> item.set(letter.toLetterListItem()));
     }
 
     public UUID id() {

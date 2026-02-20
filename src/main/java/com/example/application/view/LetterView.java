@@ -10,7 +10,7 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.signals.impl.Effect;
+import com.vaadin.flow.signals.Signal;
 import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class LetterView extends MasterDetailLayout implements HasUrlParameter<St
         setSizeFull();
 
         // Bind detail to current letter
-        Effect.effect(this, () -> {
+        Signal.effect(this, () -> {
             var letterModel = viewModel.letter().get();
             if (letterModel != null) {
                 setDetail(new LetterEditor(letterModel));
@@ -40,7 +40,7 @@ public class LetterView extends MasterDetailLayout implements HasUrlParameter<St
         });
 
         // Bind current selection to URL parameter
-        Effect.effect(this, () -> {
+        Signal.effect(this, () -> {
             var selectedItem = viewModel.listSelection().get();
             if (selectedItem != null) {
                 UI.getCurrent().navigate(LetterView.class, selectedItem.id().toString());
