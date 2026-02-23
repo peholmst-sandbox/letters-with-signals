@@ -40,6 +40,10 @@ public record Letter(
         return new Letter(id, version, subject, body, lastUpdated, state, attachments, recipients);
     }
 
+    public Letter withRecipients(List<Recipient> recipients) {
+        return new Letter(id, version, subject, body, lastUpdated, state, attachments, recipients);
+    }
+
     public LetterListItem toLetterListItem() {
         return new LetterListItem(id, subject, lastUpdated, state);
     }

@@ -1,6 +1,7 @@
 package com.example.application.util;
 
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.function.SignalMapper;
@@ -8,8 +9,8 @@ import com.vaadin.flow.signals.function.ValueMerger;
 import com.vaadin.flow.signals.local.ValueSignal;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
+import java.io.Serializable;
+import java.util.*;
 
 public final class CustomSignalUtil {
 
@@ -52,5 +53,22 @@ public final class CustomSignalUtil {
             }
         });
         return Registration.combine(gridListener, effect);
+    }
+
+    public static <T, K, O> Signal<List<Signal<T>>> mapList(Signal<O> outer, NullSafeSignalMapper<O, List<T>> signalMapper, SerializableFunction<T, K> keyMapper) {
+        final Map<K, ValueSignal<T>> signals = new HashMap<>();
+        return outer.map(l -> {
+            var originalList = Optional.ofNullable(l).map(signalMapper::map).orElse(List.of());
+            var keys = new HashSet<K>();
+            var signalList = originalList.stream().map(i -> {
+                var key = keyMapper.apply(i);
+                keys.add(key);
+                var signal = signals.computeIfAbsent(key, k -> new ValueSignal<>(i));
+                signal.set(i);
+                return (Signal<T>) signal;
+            }).toList();
+            signals.keySet().removeIf(key -> !keys.contains(key));
+            return signalList;
+        });
     }
 }
