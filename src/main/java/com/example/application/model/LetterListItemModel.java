@@ -7,11 +7,10 @@ import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.local.ValueSignal;
 
 import java.time.Instant;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.application.util.CustomSignalUtil.nullSafe;
+import static java.util.Objects.requireNonNull;
 
 public class LetterListItemModel {
 
@@ -30,13 +29,15 @@ public class LetterListItemModel {
     }
 
     LetterModel toLetterModel() {
-        // Small issue: When the letter is updated, the service fetches a new one even though it already has access to the latest instance
-        var letterSignal = item.map(item -> Optional.ofNullable(item).flatMap(letterService::findLetterByItem).orElse(null));
-        return new LetterModel(letterService, letterSignal, letter -> item.set(letter.toLetterListItem()));
+        var letterSignal = new ValueSignal<>(letterService.findLetterByItem(requireNonNull(item.peek())).orElse(null));
+        return new LetterModel(letterService, letterSignal, letter -> {
+            letterSignal.set(letter);
+            item.set(letter.toLetterListItem());
+        });
     }
 
     public UUID id() {
-        return Objects.requireNonNull(item.peek()).id();
+        return requireNonNull(item.peek()).id();
     }
 
 

@@ -23,6 +23,8 @@ public class LetterService {
     private final ConcurrentMap<UUID, Letter> letters = new ConcurrentHashMap<>();
 
     public List<LetterListItem> findLetters() {
+        introduceArtificialLatency();
+        log.info("Finding all letters");
         return letters.values().stream()
                 .sorted(Comparator.comparing(Letter::lastUpdated))
                 .map(Letter::toLetterListItem)
@@ -30,10 +32,13 @@ public class LetterService {
     }
 
     public Optional<Letter> findLetterByItem(LetterListItem item) {
+        introduceArtificialLatency();
+        log.info("Finding letter by ID {}", item.id());
         return Optional.ofNullable(letters.get(item.id()));
     }
 
     public Letter saveLetter(Letter letter) {
+        introduceArtificialLatency();
         return letters.compute(letter.id(), (key, value) -> {
             if (value != null && value.version() != letter.version()) {
                 throw new IllegalStateException("Optimistic locking error");
@@ -49,5 +54,13 @@ public class LetterService {
         log.info("Creating letter {}", id);
         return saveLetter(new Letter(id, 1, "", "", clock.instant(), LetterState.DRAFT,
                 Collections.emptyList(), Collections.emptyList())).toLetterListItem();
+    }
+
+    private void introduceArtificialLatency() {
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
