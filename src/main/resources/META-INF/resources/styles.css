@@ -1,2 +1,28 @@
 /* Add your styles here */
 @import "badge.css";
+
+.recipient-card {
+    display: flex;
+    flex-direction: column;
+
+    background: var(--vaadin-background-color);
+    padding: var(--vaadin-padding-m);
+    border: 1px solid var(--vaadin-border-color-secondary);
+    border-radius: var(--vaadin-radius-m);
+    gap: var(--vaadin-gap-s);
+}
+
+.recipient-card .name-and-email {
+    display: flex;
+    flex-direction: column;
+    gap: var(--vaadin-gap-s);
+    flex-grow: 1;
+}
+
+.recipient-card .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--vaadin-gap-s);
+}
