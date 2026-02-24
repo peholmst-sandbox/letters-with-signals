@@ -1,6 +1,9 @@
 package com.example.application.model;
 
+import com.example.application.converter.EmailAddressConverter;
+import com.example.application.data.EmailAddress;
 import com.example.application.data.Recipient;
+import com.example.application.util.ConvertedSignal;
 import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.signals.Signal;
 
@@ -16,7 +19,7 @@ public class RecipientModel {
     private final SerializableConsumer<Recipient> writeCallback;
 
     private final Signal<String> name;
-    private final Signal<String> emailAddress;
+    private final ConvertedSignal<EmailAddress, String> emailAddress;
     private final Signal<Boolean> requireResponse;
 
     public RecipientModel(LetterModel letterModel, Signal<Recipient> recipient, SerializableConsumer<Recipient> writeCallback) {
@@ -25,7 +28,7 @@ public class RecipientModel {
         this.writeCallback = writeCallback;
 
         this.name = recipient.map(nullSafe(Recipient::name, ""));
-        this.emailAddress = recipient.map(nullSafe(Recipient::emailAddress, ""));
+        this.emailAddress = new ConvertedSignal<>(recipient.map(nullSafe(Recipient::emailAddress, null)), this::setEmailAddress, new EmailAddressConverter());
         this.requireResponse = recipient.map(nullSafe(Recipient::requireResponse, false));
     }
 
@@ -43,11 +46,11 @@ public class RecipientModel {
         update(r -> r.withName(name));
     }
 
-    public Signal<String> emailAddress() {
+    public ConvertedSignal<EmailAddress, String> emailAddress() {
         return emailAddress;
     }
 
-    public void setEmailAddress(String emailAddress) {
+    public void setEmailAddress(EmailAddress emailAddress) {
         update(r -> r.withEmailAddress(emailAddress));
     }
 
@@ -66,6 +69,4 @@ public class RecipientModel {
     public void remove() {
         letterModel.removeRecipient(requireNonNull(recipient.peek()));
     }
-
-    // TODO Validation!
 }

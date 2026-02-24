@@ -51,8 +51,11 @@ class RecipientSubview extends VerticalLayout {
         var email = new EmailField();
         email.setPlaceholder("Email");
         email.setValueChangeMode(ValueChangeMode.LAZY);
-        email.bindValue(recipientModel.emailAddress(), recipientModel::setEmailAddress);
+        email.bindValue(recipientModel.emailAddress().presentation(), recipientModel.emailAddress()::setPresentation);
+        email.bindErrorMessage(recipientModel.emailAddress().errorMessage());
+        email.bindInvalid(recipientModel.emailAddress().invalid());
         email.bindReadOnly(recipientModel.readOnly());
+        email.setManualValidation(true); // Or there will be errors in the log
         email.setWidthFull();
 
         var requireResponse = new Checkbox("Require Response");

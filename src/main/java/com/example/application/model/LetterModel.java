@@ -30,7 +30,6 @@ public class LetterModel {
     private final Signal<Boolean> readOnly;
 
     // TODO Attachments?
-    // TODO Recipients?
     // TODO Comments?
 
     LetterModel(LetterService letterService, Signal<Letter> letter, SerializableConsumer<Letter> writeCallback) {

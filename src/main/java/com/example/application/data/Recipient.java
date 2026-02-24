@@ -1,11 +1,13 @@
 package com.example.application.data;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.UUID;
 
 public record Recipient(
         UUID id,
         String name,
-        String emailAddress,
+        @Nullable EmailAddress emailAddress,
         boolean requireResponse
 ) {
 
@@ -13,7 +15,7 @@ public record Recipient(
         return new Recipient(id, name, emailAddress, requireResponse);
     }
 
-    public Recipient withEmailAddress(String emailAddress) {
+    public Recipient withEmailAddress(EmailAddress emailAddress) {
         return new Recipient(id, name, emailAddress, requireResponse);
     }
 
@@ -22,6 +24,10 @@ public record Recipient(
     }
 
     public static Recipient empty() {
-        return new Recipient(UUID.randomUUID(), "", "", false);
+        return new Recipient(UUID.randomUUID(), "", null, false);
+    }
+
+    public boolean isValid() {
+        return emailAddress != null;
     }
 }
