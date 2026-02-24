@@ -5,11 +5,9 @@ import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.function.SignalMapper;
-import com.vaadin.flow.signals.function.ValueMerger;
 import com.vaadin.flow.signals.local.ValueSignal;
 import org.jspecify.annotations.Nullable;
 
-import java.io.Serializable;
 import java.util.*;
 
 public final class CustomSignalUtil {
@@ -38,11 +36,7 @@ public final class CustomSignalUtil {
 
     public static <T> Registration bindSelection(Grid<T> grid, ValueSignal<T> signal) {
         var gridListener = grid.addSelectionListener(event -> {
-            T selectedItem = event.getFirstSelectedItem().orElse(null);
-            // Avoid infinite loop
-            if (!Objects.equals(selectedItem, signal.peek())) {
-                signal.set(selectedItem);
-            }
+            signal.set(event.getFirstSelectedItem().orElse(null));
         });
         var effect = Signal.effect(grid, () -> {
             T selection = signal.get();

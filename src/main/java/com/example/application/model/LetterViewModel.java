@@ -12,7 +12,7 @@ public class LetterViewModel {
 
     private final LetterService letterService;
     private final ValueSignal<List<LetterListItemModel>> listItems = new ValueSignal<>(List.of());
-    private final ValueSignal<LetterListItemModel> listSelection = new ValueSignal<>();
+    private final ValueSignal<LetterListItemModel> listSelection = new ValueSignal<>(null);
     private final Signal<LetterModel> letter;
 
     public LetterViewModel(LetterService letterService) {
@@ -34,20 +34,11 @@ public class LetterViewModel {
     }
 
     public void selectById(UUID letterId) {
-        var selectedItem = listSelection.peek();
-        // Need this check to avoid an infinite loop when called by setParameter(..)
-        // TODO Remove once https://github.com/vaadin/flow/issues/23588 is closed
-        if (selectedItem == null || !selectedItem.id().equals(letterId)) {
-            listSelection.set(requireNonNull(listItems.peek()).stream().filter(itemModel -> itemModel.id().equals(letterId)).findFirst().orElse(null));
-        }
+        listSelection.set(requireNonNull(listItems.peek()).stream().filter(itemModel -> itemModel.id().equals(letterId)).findFirst().orElse(null));
     }
 
     public void deselect() {
-        // Need this check to avoid an infinite loop when called by setParameter(..)
-        // TODO Remove once https://github.com/vaadin/flow/issues/23588 is closed
-        if (listSelection.peek() != null) {
-            listSelection.set(null);
-        }
+        listSelection.set(null);
     }
 
     public Signal<LetterModel> letter() {
